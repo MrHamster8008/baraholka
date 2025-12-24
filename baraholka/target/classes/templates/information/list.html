@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Информация о продажах - Барахолка</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            Барахолка
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/landlords">
+                        Арендодатели
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/rentals">
+                        Аренды
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/information">
+                        Информация о продажах
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Информация о продажах</h1>
+        <a href="/" class="btn btn-outline-secondary">
+            На главную
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <form th:action="@{/information/search}" method="get" class="d-flex">
+                        <input type="number" name="rentalId" class="form-control me-2"
+                               placeholder="Поиск по ID аренды..." th:value="${searchQuery}">
+                        <button type="submit" class="btn btn-primary">
+                            Найти
+                        </button>
+                    </form>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="/information/new" class="btn btn-success">
+                        Добавить информацию
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>ID заказа</th>
+                        <th>Дата продажи</th>
+                        <th>ID аренды</th>
+                        <th>Категория товара</th>
+                        <th>Арендодатель</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="info : ${informationList}">
+                        <td th:text="${info.orderId}"></td>
+                        <td th:text="${#temporals.format(info.saleDate, 'dd.MM.yyyy')}"></td>
+                        <td>
+                            <a th:href="@{/rentals}" class="badge bg-primary text-decoration-none">
+                                <span th:text="${info.rental.placementId}"></span>
+                            </a>
+                        </td>
+                        <td th:text="${info.rental.productCategory}"></td>
+                        <td th:text="${info.rental.landlord.landlordName}"></td>
+                        <td>
+                            <a th:href="@{/information/edit/{id}(id=${info.orderId})}"
+                               class="btn btn-sm btn-warning me-1">
+                                Редактировать
+                            </a>
+                            <a th:href="@{/information/delete/{id}(id=${info.orderId})}"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Вы уверены, что хотите удалить информацию о продаже?')">
+                                Удалить
+                            </a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(informationList)}">
+                        <td colspan="6" class="text-center text-muted py-4">
+                            Информация о продажах не найдена
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="/" class="btn btn-link">
+            Вернуться на главную
+        </a>
+        <a href="/rentals" class="btn btn-link">
+            Перейти к арендам
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
